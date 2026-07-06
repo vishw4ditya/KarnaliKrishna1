@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 transition-colors duration-300 font-sans;
+  }
+  .dark body {
+    @apply bg-slate-950 text-slate-50;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+}
+
+/* Glassmorphism effects */
+.glass {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.dark .glass {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Customized scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100 dark:bg-slate-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-700 rounded-full hover:bg-slate-400 dark:hover:bg-slate-600;
+}
+
+/* Quick animation helpers */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+/* Watery Animations */
+
+/* Water Ripple Pulse around logo */
+@keyframes waterPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4), 0 0 0 10px rgba(14, 165, 233, 0.2), 0 0 0 20px rgba(14, 165, 233, 0.1);
+  }
+  100% {
+    box-shadow: 0 0 0 15px rgba(14, 165, 233, 0), 0 0 0 30px rgba(14, 165, 233, 0), 0 0 0 45px rgba(14, 165, 233, 0);
+  }
+}
+.animate-water-ripple {
+  animation: waterPulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Floating animation like resting on gentle water */
+@keyframes floatWater {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+.animate-float-water {
+  animation: floatWater 5s ease-in-out infinite;
+}
+
+/* Liquid flow gradient for headings */
+@keyframes liquidFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.liquid-text {
+  background: linear-gradient(270deg, #38bdf8, #0ea5e9, #0284c7, #22d3ee, #06b6d4);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: liquidFlow 6s ease infinite;
+}
+
+/* Rising water bubble particles */
+@keyframes bubbleUp {
+  0% {
+    transform: translateY(100px) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-500px) scale(1.2) rotate(360deg);
+    opacity: 0;
+  }
+}
+.water-bubble {
+  position: absolute;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 70%, rgba(14, 165, 233, 0.25) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: bubbleUp 8s ease-in infinite;
+}
+
+/* Wave scroll animation */
+@keyframes waveMove {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.animate-wave-slow {
+  animation: waveMove 25s linear infinite;
+}
+.animate-wave-fast {
+  animation: waveMove 12s linear infinite;
+}
+
+/* Aqua-glassmorphic styling for floating cards */
+.aqua-glass {
+  background: rgba(224, 242, 254, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(3, 105, 161, 0.1);
+}
+
+.dark .aqua-glass {
+  background: rgba(8, 47, 73, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Chrome/Safari input autofill override to prevent text color issues */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #f8fafc inset !important; /* bg-slate-50 */
+  -webkit-text-fill-color: #0f172a !important; /* text-slate-900 */
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover, 
+.dark input:-webkit-autofill:focus, 
+.dark input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #090d16 inset !important; /* bg-slate-950 context */
+  -webkit-text-fill-color: #f8fafc !important; /* text-white */
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* select dropdown option color override for dark theme native UI */
+.dark option {
+  background-color: #020617 !important; /* bg-slate-950 */
+  color: #f8fafc !important; /* text-slate-50 */
+}
+
+/* Hotfix for accidental dark:bg-slate-955 class usage */
+.dark .dark\:bg-slate-955, 
+.dark\:bg-slate-955:is(.dark *) {
+  background-color: #020617 !important; /* bg-slate-950 fallback */
+}

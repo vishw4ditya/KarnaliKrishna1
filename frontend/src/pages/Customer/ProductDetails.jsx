@@ -57,6 +57,17 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     if (!product) return;
 
+    if (!user) {
+      alert('Please log in to add products to the cart.');
+      navigate('/login');
+      return;
+    }
+
+    if (user.role !== 'customer') {
+      alert('Only customers can add products to the cart.');
+      return;
+    }
+
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     
     // Build chosen variant string, e.g. "Size: M, Color: Black"

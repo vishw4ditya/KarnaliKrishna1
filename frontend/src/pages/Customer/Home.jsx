@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api, getAssetUrl } from '../../context/AuthContext';
+import { api, getAssetUrl, useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Search, SlidersHorizontal, ShoppingCart, Star, MapPin, Grid, Layers, CreditCard, Droplet, Sparkles } from 'lucide-react';
 import logo from '../../assets/logo.jpg';
 
 const Home = () => {
+  const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
 
@@ -70,6 +71,17 @@ const Home = () => {
 
   const handleAddToCart = (e, product) => {
     e.stopPropagation();
+    
+    if (!user) {
+      alert('Please log in to add products to the cart.');
+      navigate('/login');
+      return;
+    }
+
+    if (user.role !== 'customer') {
+      alert('Only customers can add products to the cart.');
+      return;
+    }
     
     // Retrieve existing cart
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');

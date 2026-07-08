@@ -118,6 +118,9 @@ function AppContent() {
           <Route path="/admin/settings" element={
             <ProtectedRoute allowedRoles={['super_admin']}><WebsiteSettings /></ProtectedRoute>
           } />
+          <Route path="/admin/issues" element={
+            <ProtectedRoute allowedRoles={['super_admin']}><IssueReporting /></ProtectedRoute>
+          } />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

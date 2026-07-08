@@ -107,6 +107,7 @@ const Navbar = () => {
               <Link to="/admin/branches" className={isActive('/admin/branches')}>{t('totalBranches')}</Link>
               <Link to="/admin/orders" className={isActive('/admin/orders')}>{t('totalOrders')}</Link>
               <Link to="/admin/approvals" className={isActive('/admin/approvals')}>{t('pendingApproval')}</Link>
+              <Link to="/admin/issues" className={isActive('/admin/issues')}>{t('issueReport')}</Link>
               <Link to="/admin/settings" className={isActive('/admin/settings')}>{t('settings')}</Link>
               <Link to="/profile" className={isActive('/profile')}>{t('profile')}</Link>
             </>
@@ -192,6 +193,7 @@ const Navbar = () => {
               <Link to="/admin/branches" onClick={() => setMobileMenuOpen(false)} className={isActive('/admin/branches')}>{t('totalBranches')}</Link>
               <Link to="/admin/orders" onClick={() => setMobileMenuOpen(false)} className={isActive('/admin/orders')}>{t('totalOrders')}</Link>
               <Link to="/admin/approvals" onClick={() => setMobileMenuOpen(false)} className={isActive('/admin/approvals')}>{t('pendingApproval')}</Link>
+              <Link to="/admin/issues" onClick={() => setMobileMenuOpen(false)} className={isActive('/admin/issues')}>{t('issueReport')}</Link>
               <Link to="/admin/settings" onClick={() => setMobileMenuOpen(false)} className={isActive('/admin/settings')}>{t('settings')}</Link>
               <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className={isActive('/profile')}>{t('profile')}</Link>
             </>

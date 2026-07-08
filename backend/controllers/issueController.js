@@ -75,7 +75,15 @@ export const createIssue = async (req, res) => {
 // @route   PUT /api/issues/:id
 // @access  Private (Admin or Branch Head)
 export const updateIssue = async (req, res) => {
-  const { resolutionDetails, status } = req.body;
+  const {
+    customerName,
+    customerPhone,
+    customerAddress,
+    issueCategory,
+    issueDescription,
+    resolutionDetails,
+    status
+  } = req.body;
 
   try {
     const issue = await CustomerIssue.findById(req.params.id);
@@ -88,15 +96,27 @@ export const updateIssue = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Not authorized to modify reports of other branches' });
     }
 
-    issue.resolutionDetails = resolutionDetails || issue.resolutionDetails;
-    issue.status = status || issue.status;
+    if (customerName) issue.customerName = customerName;
+    if (customerPhone) issue.customerPhone = customerPhone;
+    if (customerAddress) issue.customerAddress = customerAddress;
+    if (issueCategory) issue.issueCategory = issueCategory;
+    if (issueDescription) issue.issueDescription = issueDescription;
+    
+    if (resolutionDetails !== undefined) {
+      issue.resolutionDetails = resolutionDetails;
+    }
 
-    if (status === 'Resolved' && !issue.resolutionDate) {
-      issue.resolutionDate = new Date();
+    if (status) {
+      issue.status = status;
+      if (status === 'Resolved' && !issue.resolutionDate) {
+        issue.resolutionDate = new Date();
+      } else if (status !== 'Resolved') {
+        issue.resolutionDate = null;
+      }
     }
 
     const updatedIssue = await issue.save();
-    res.json({ success: true, issue: updatedOrder });
+    res.json({ success: true, issue: updatedIssue });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

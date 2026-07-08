@@ -7,6 +7,13 @@ const generateToken = (id) => {
   });
 };
 
+const validatePasswordMix = (password) => {
+  if (!password) return false;
+  const hasLetter = /[a-zA-Z]/.test(password);
+  const hasDigit = /[0-9]/.test(password);
+  return hasLetter && hasDigit;
+};
+
 // @desc    Register a new customer
 // @route   POST /api/auth/register
 // @access  Public
@@ -14,6 +21,10 @@ export const registerCustomer = async (req, res) => {
   const { name, email, password, phone } = req.body;
 
   try {
+    if (!validatePasswordMix(password)) {
+      return res.status(400).json({ success: false, message: 'Password must contain a mix of alphabets and digits' });
+    }
+
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ success: false, message: 'User already exists' });
@@ -53,6 +64,10 @@ export const registerBranchHead = async (req, res) => {
   const { name, email, password, phone, branchName, branchId } = req.body;
 
   try {
+    if (!validatePasswordMix(password)) {
+      return res.status(400).json({ success: false, message: 'Password must contain a mix of alphabets and digits' });
+    }
+
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ success: false, message: 'User already exists' });
@@ -116,6 +131,7 @@ export const loginUser = async (req, res) => {
           branchId: user.branchId,
           branchName: user.branchName,
           addresses: user.addresses,
+          customId: user.customId,
         },
       });
     } else {
@@ -167,66 +183,6 @@ export const googleLogin = async (req, res) => {
         addresses: user.addresses,
       },
     });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-// @desc    Simulate Mobile OTP Login (Send OTP or verify OTP)
-// @route   POST /api/auth/otp
-// @access  Public
-export const otpLogin = async (req, res) => {
-  const { phone, code, step } = req.body; // step: 'send' or 'verify'
-
-  try {
-    if (step === 'send') {
-      // Find or create customer
-      let user = await User.findOne({ phone });
-      if (!user) {
-        // Create user with dummy email
-        user = await User.create({
-          name: `User-${phone.slice(-4)}`,
-          email: `${phone}@nepalbazaar.com`,
-          phone,
-          password: Math.random().toString(36).slice(-12),
-          role: 'customer',
-          status: 'approved',
-        });
-      }
-
-      // Simulate sending SMS
-      return res.json({
-        success: true,
-        message: `OTP sent to ${phone} (Use '123456' for verification)`,
-      });
-    }
-
-    if (step === 'verify') {
-      if (code !== '123456') {
-        return res.status(400).json({ success: false, message: 'Invalid OTP code' });
-      }
-
-      const user = await User.findOne({ phone });
-      if (!user) {
-        return res.status(404).json({ success: false, message: 'User not found' });
-      }
-
-      return res.json({
-        success: true,
-        token: generateToken(user._id),
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          status: user.status,
-          addresses: user.addresses,
-        },
-      });
-    }
-
-    res.status(400).json({ success: false, message: 'Invalid step' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -358,11 +314,14 @@ export const updateProfile = async (req, res) => {
     if (phone) user.phone = phone;
 
     if (password && password.trim() !== '') {
+      if (!validatePasswordMix(password)) {
+        return res.status(400).json({ success: false, message: 'Password must contain a mix of alphabets and digits' });
+      }
       user.password = password;
     }
 
     if (req.file) {
-      user.profilePhotoUrl = `/uploads/${req.file.filename}`;
+      user.profilePhotoUrl = req.file.path && req.file.path.startsWith('http') ? req.file.path : `/uploads/${req.file.filename}`;
     }
 
     await user.save();
@@ -381,8 +340,44 @@ export const updateProfile = async (req, res) => {
         branchName: user.branchName,
         profilePhotoUrl: user.profilePhotoUrl,
         addresses: user.addresses,
+        customId: user.customId,
       },
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Reset password using customId and phone
+// @route   POST /api/auth/forgot-password
+// @access  Public
+export const resetPasswordWithCustomIdAndPhone = async (req, res) => {
+  const { customId, phone, newPassword } = req.body;
+
+  try {
+    if (!customId || !phone || !newPassword) {
+      return res.status(400).json({ success: false, message: 'ID, phone number, and new password are required' });
+    }
+
+    if (!validatePasswordMix(newPassword)) {
+      return res.status(400).json({ success: false, message: 'Password must contain a mix of alphabets and digits' });
+    }
+
+    // Find super admin or branch head with matching customId and phone number
+    const user = await User.findOne({
+      customId,
+      phone,
+      role: { $in: ['super_admin', 'branch_head'] }
+    });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Invalid ID or phone number' });
+    }
+
+    user.password = newPassword; // Will be hashed automatically by userSchema pre-save hook
+    await user.save();
+
+    res.json({ success: true, message: 'Password has been updated successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

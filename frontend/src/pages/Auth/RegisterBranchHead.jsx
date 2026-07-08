@@ -45,6 +45,14 @@ const RegisterBranchHead = () => {
     e.preventDefault();
     setError('');
     setSuccessMsg('');
+
+    const hasAlphabet = /[a-zA-Z]/.test(password);
+    const hasDigit = /[0-9]/.test(password);
+    if (!hasAlphabet || !hasDigit) {
+      setError('Password must contain a mix of alphabets and digits');
+      return;
+    }
+
     setLoading(true);
 
     const payload = {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth, api } from '../../context/AuthContext';
+import { useAuth, api, getAssetUrl } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import LocationPicker from '../../components/LocationPicker';
 import { User, Mail, Phone, MapPin, Trash2, Plus, Home, Briefcase, Landmark } from 'lucide-react';
@@ -58,6 +58,13 @@ const Profile = () => {
       formData.append('email', editEmail);
       formData.append('phone', editPhone);
       if (editPassword.trim()) {
+        const hasAlphabet = /[a-zA-Z]/.test(editPassword);
+        const hasDigit = /[0-9]/.test(editPassword);
+        if (!hasAlphabet || !hasDigit) {
+          alert('Password must contain a mix of alphabets and digits');
+          setProfileLoading(false);
+          return;
+        }
         formData.append('password', editPassword);
       }
       if (selectedFile) {
@@ -161,7 +168,7 @@ const Profile = () => {
               />
             ) : user?.profilePhotoUrl ? (
               <img 
-                src={`http://localhost:5000${user.profilePhotoUrl}`} 
+                src={getAssetUrl(user.profilePhotoUrl)} 
                 alt="Profile" 
                 className="w-20 h-20 rounded-full object-cover border border-primary-500/30 shadow-md" 
               />

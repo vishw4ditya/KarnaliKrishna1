@@ -124,6 +124,19 @@ const seedInitialData = async () => {
       console.log('Password initialized from environment setup.');
       console.log('==================================================');
     }
+
+    // 4. Backfill customId for existing super_admin and branch_head accounts if missing
+    const usersToBackfill = await User.find({
+      role: { $in: ['super_admin', 'branch_head'] },
+      customId: { $exists: false }
+    });
+    if (usersToBackfill.length > 0) {
+      console.log(`Backfilling customId for ${usersToBackfill.length} users...`);
+      for (const u of usersToBackfill) {
+        await u.save();
+      }
+      console.log('Backfill complete!');
+    }
   } catch (error) {
     console.error('Error seeding data:', error);
   }

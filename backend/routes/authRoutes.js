@@ -4,12 +4,12 @@ import {
   registerBranchHead,
   loginUser,
   googleLogin,
-  otpLogin,
   getMe,
   addAddress,
   updateAddress,
   deleteAddress,
   updateProfile,
+  resetPasswordWithCustomIdAndPhone,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import upload from '../middleware/uploadMiddleware.js';
@@ -20,7 +20,7 @@ router.post('/register', registerCustomer);
 router.post('/register-branch-head', registerBranchHead);
 router.post('/login', loginUser);
 router.post('/google', googleLogin);
-router.post('/otp', otpLogin);
+router.post('/forgot-password', resetPasswordWithCustomIdAndPhone);
 
 router.get('/me', protect, getMe);
 router.put('/profile', protect, upload.single('profilePhoto'), updateProfile);

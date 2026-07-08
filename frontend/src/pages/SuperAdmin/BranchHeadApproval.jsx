@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../context/AuthContext';
+import { api, getAssetUrl } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { ShieldCheck, ShieldAlert, Calendar, Loader2, Edit3, Trash2, X } from 'lucide-react';
 
@@ -155,7 +155,7 @@ const BranchHeadApproval = () => {
                 <div className="flex-shrink-0">
                   {head.profilePhotoUrl ? (
                     <img 
-                      src={`http://localhost:5000${head.profilePhotoUrl}`} 
+                      src={getAssetUrl(head.profilePhotoUrl)} 
                       alt="Profile" 
                       className="w-14 h-14 rounded-full object-cover border border-primary-500/20 shadow-sm" 
                     />
@@ -173,6 +173,9 @@ const BranchHeadApproval = () => {
                       {head.name}
                     </h3>
                     <div className="flex flex-wrap gap-2 items-center justify-center sm:justify-start">
+                      <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full uppercase font-mono font-bold">
+                        ID: {head.customId || 'PENDING'}
+                      </span>
                       <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full uppercase">
                         {head.role}
                       </span>

@@ -62,12 +62,42 @@ const userSchema = new mongoose.Schema(
     googleId: {
       type: String,
       default: null,
+    },
+    customId: {
+      type: String,
+      unique: true,
+      sparse: true,
     }
   },
   {
     timestamps: true,
   }
 );
+
+// Helper function to generate custom ID (2 letters role prefix + 6 digits)
+const generateCustomId = (role) => {
+  const prefix = role === 'super_admin' ? 'SA' : role === 'branch_head' ? 'BH' : 'US';
+  const digits = Math.floor(100000 + Math.random() * 900000); // 6 digits
+  return `${prefix}${digits}`;
+};
+
+// Generate customId before saving if applicable
+userSchema.pre('save', async function (next) {
+  if ((this.role === 'super_admin' || this.role === 'branch_head') && !this.customId) {
+    let isUnique = false;
+    let attempts = 0;
+    while (!isUnique && attempts < 10) {
+      const tempId = generateCustomId(this.role);
+      const existing = await this.constructor.findOne({ customId: tempId });
+      if (!existing) {
+        this.customId = tempId;
+        isUnique = true;
+      }
+      attempts++;
+    }
+  }
+  next();
+});
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {

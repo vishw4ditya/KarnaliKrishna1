@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../context/AuthContext';
+import { api, getAssetUrl } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Search, SlidersHorizontal, ShoppingCart, Star, MapPin, Grid, Layers, CreditCard, Droplet, Sparkles } from 'lucide-react';
 import logo from '../../assets/logo.jpg';
@@ -274,7 +274,7 @@ const Home = () => {
                   {/* Image */}
                   <div className="relative w-full h-48 bg-slate-100 dark:bg-slate-950 overflow-hidden">
                     <img
-                      src={product.images[0] || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80'}
+                      src={getAssetUrl(product.images[0]) || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80'}
                       alt={product.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />

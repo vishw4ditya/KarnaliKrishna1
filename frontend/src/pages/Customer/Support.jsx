@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../context/AuthContext';
+import { api, getAssetUrl } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import WhatsAppButton from '../../components/WhatsAppButton';
 import { HelpCircle, User, Phone, MapPin } from 'lucide-react';
@@ -60,7 +60,7 @@ const Support = () => {
               {/* Photo */}
               <div className="w-16 h-16 bg-slate-100 dark:bg-slate-950 rounded-xl overflow-hidden flex-shrink-0 border border-slate-100 dark:border-slate-800">
                 <img
-                  src={head.profilePhotoUrl || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80'}
+                  src={getAssetUrl(head.profilePhotoUrl) || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80'}
                   alt={head.name}
                   className="w-full h-full object-cover"
                 />

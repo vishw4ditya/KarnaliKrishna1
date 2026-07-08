@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../context/AuthContext';
+import { api, getAssetUrl } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Settings, Save, CheckCircle, Loader2, Plus, Edit3, Trash2, X, Upload, Ticket } from 'lucide-react';
 
@@ -529,7 +529,7 @@ const WebsiteSettings = () => {
                         <td className="p-4">
                           <div className="w-10 h-10 bg-slate-100 dark:bg-slate-950 rounded-lg overflow-hidden flex items-center justify-center">
                             {c.imageUrl ? (
-                              <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
+                              <img src={getAssetUrl(c.imageUrl)} alt="" className="w-full h-full object-cover" />
                             ) : (
                               <span className="text-[10px] text-slate-400">No Image</span>
                             )}

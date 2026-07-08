@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../context/AuthContext';
+import { api, useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { SalesTrendChart, BranchPerformanceChart } from '../../components/ChartDashboard';
 import { CreditCard, Package, ShoppingBag, FileQuestion, Users, MapPin, Ticket, Download, TrendingUp, BarChart2 } from 'lucide-react';
 
 const AdminDashboard = () => {
+  const { user } = useAuth();
   const { t } = useLanguage();
   const [metrics, setMetrics] = useState(null);
   const [trend, setTrend] = useState([]);
   const [performance, setPerformance] = useState([]);
+  const [branchHeads, setBranchHeads] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Export States
@@ -23,11 +25,18 @@ const AdminDashboard = () => {
   const fetchAdminAnalytics = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/admin/analytics');
+      const [res, bhRes] = await Promise.all([
+        api.get('/admin/analytics'),
+        api.get('/admin/branch-heads')
+      ]);
+      
       if (res.data.success) {
         setMetrics(res.data.metrics);
         setTrend(res.data.analytics.salesTrend);
         setPerformance(res.data.analytics.branchPerformance);
+      }
+      if (bhRes.data.success) {
+        setBranchHeads(bhRes.data.branchHeads);
       }
     } catch (err) {
       console.error('Error fetching admin analytics', err);
@@ -76,7 +85,14 @@ const AdminDashboard = () => {
       
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Owner Admin Dashboard</h1>
+        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+          <span>Owner Admin Dashboard</span>
+          {user?.customId && (
+            <span className="text-xs font-mono font-black bg-primary-100 dark:bg-primary-950/30 text-primary-600 dark:text-primary-400 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              ID: {user.customId}
+            </span>
+          )}
+        </h1>
         <p className="text-xs text-slate-400 mt-1 font-semibold">
           Platform-wide metrics. Monitor sales trends, download excel reports, audit branch performance.
         </p>
@@ -201,6 +217,48 @@ const AdminDashboard = () => {
           <span>Branch Earnings Audit (Nepal Performance)</span>
         </h3>
         <BranchPerformanceChart data={performance} />
+      </div>
+
+      {/* Row 3: Branch Heads ID Directory */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 rounded-2xl shadow-sm">
+        <h3 className="font-extrabold text-slate-800 dark:text-slate-100 text-sm uppercase tracking-wider mb-6 flex items-center gap-1.5">
+          <Users className="w-4.5 h-4.5 text-primary-500" />
+          <span>Branch Heads Directory & IDs</span>
+        </h3>
+        {branchHeads.length === 0 ? (
+          <div className="text-slate-400 py-6 text-center text-xs font-semibold">
+            No branch heads registered yet.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 uppercase tracking-wider">
+                  <th className="py-3 px-4">Custom ID</th>
+                  <th className="py-3 px-4">Name</th>
+                  <th className="py-3 px-4">Phone</th>
+                  <th className="py-3 px-4">Branch</th>
+                  <th className="py-3 px-4">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {branchHeads.map((head) => (
+                  <tr key={head._id} className="border-b border-slate-50 dark:border-slate-850 hover:bg-slate-50/50 dark:hover:bg-slate-950/30 text-xs">
+                    <td className="py-3.5 px-4 font-mono font-black text-primary-600 dark:text-primary-400">{head.customId || 'Pending'}</td>
+                    <td className="py-3.5 px-4 text-slate-800 dark:text-slate-200">{head.name}</td>
+                    <td className="py-3.5 px-4 text-slate-500 font-medium">{head.phone}</td>
+                    <td className="py-3.5 px-4 text-slate-800 dark:text-slate-200 font-bold">{head.branchName || 'Not Assigned'}</td>
+                    <td className="py-3.5 px-4">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold capitalize ${head.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : head.status === 'pending' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'}`}>
+                        {head.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
     </div>

@@ -115,7 +115,7 @@ export const createProduct = async (req, res) => {
 
     let images = [];
     if (req.files && req.files.length > 0) {
-      images = req.files.map((file) => `/uploads/${file.filename}`);
+      images = req.files.map((file) => file.path && file.path.startsWith('http') ? file.path : `/uploads/${file.filename}`);
     }
 
     const product = await Product.create({
@@ -192,7 +192,7 @@ export const updateProduct = async (req, res) => {
 
     // Append new images if uploaded
     if (req.files && req.files.length > 0) {
-      const newImages = req.files.map((file) => `/uploads/${file.filename}`);
+      const newImages = req.files.map((file) => file.path && file.path.startsWith('http') ? file.path : `/uploads/${file.filename}`);
       product.images = [...product.images, ...newImages];
     }
 

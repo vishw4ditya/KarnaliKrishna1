@@ -20,6 +20,14 @@ const RegisterCustomer = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    const hasAlphabet = /[a-zA-Z]/.test(password);
+    const hasDigit = /[0-9]/.test(password);
+    if (!hasAlphabet || !hasDigit) {
+      setError('Password must contain a mix of alphabets and digits');
+      return;
+    }
+
     setLoading(true);
 
     try {

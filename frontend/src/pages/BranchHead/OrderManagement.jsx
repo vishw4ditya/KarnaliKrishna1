@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api, useAuth } from '../../context/AuthContext';
+import { api, useAuth, getAssetUrl } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { ShoppingBag, Eye, Calendar, MapPin, Download, Edit3, X, Save, Check, Loader2 } from 'lucide-react';
 
@@ -346,7 +346,7 @@ const OrderManagement = () => {
                     <div key={idx} className="flex items-center gap-3 p-3">
                       {item.image && (
                         <img 
-                          src={item.image} 
+                          src={getAssetUrl(item.image)} 
                           alt={item.name} 
                           className="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-slate-800" 
                         />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../context/AuthContext';
+import { api, getAssetUrl } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Trash2, ShoppingBag, ArrowRight, Ticket, Check } from 'lucide-react';
 
@@ -150,7 +150,7 @@ const Cart = () => {
             >
               {/* Product Thumbnail */}
               <div className="w-16 h-16 bg-slate-100 dark:bg-slate-950 rounded-xl overflow-hidden flex-shrink-0">
-                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                <img src={getAssetUrl(item.image)} alt={item.name} className="w-full h-full object-cover" />
               </div>
 
               {/* Description */}

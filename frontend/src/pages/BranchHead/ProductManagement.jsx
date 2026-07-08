@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api, useAuth } from '../../context/AuthContext';
+import { api, useAuth, getAssetUrl } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Plus, Edit3, Trash2, X, Upload, Save, HelpCircle, Loader2 } from 'lucide-react';
 
@@ -307,7 +307,7 @@ const ProductManagement = () => {
                   <tr key={p._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-950/20 font-semibold">
                     <td className="p-4 flex items-center gap-3">
                       <div className="w-10 h-10 bg-slate-100 dark:bg-slate-950 rounded-lg overflow-hidden flex-shrink-0">
-                        <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                        <img src={getAssetUrl(p.images[0])} alt="" className="w-full h-full object-cover" />
                       </div>
                       <div className="min-w-0">
                         <p className="font-extrabold text-slate-900 dark:text-white truncate max-w-[150px]">{p.name}</p>

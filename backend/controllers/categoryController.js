@@ -26,7 +26,7 @@ export const createCategory = async (req, res) => {
 
     let imageUrl = '';
     if (req.file) {
-      imageUrl = `/uploads/${req.file.filename}`;
+      imageUrl = req.file.path && req.file.path.startsWith('http') ? req.file.path : `/uploads/${req.file.filename}`;
     }
 
     const category = await Category.create({
@@ -57,7 +57,7 @@ export const updateCategory = async (req, res) => {
     category.description = description || category.description;
 
     if (req.file) {
-      category.imageUrl = `/uploads/${req.file.filename}`;
+      category.imageUrl = req.file.path && req.file.path.startsWith('http') ? req.file.path : `/uploads/${req.file.filename}`;
     }
 
     const updatedCategory = await category.save();

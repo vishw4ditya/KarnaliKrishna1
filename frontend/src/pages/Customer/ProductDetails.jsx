@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { api, useAuth } from '../../context/AuthContext';
+import { api, useAuth, getAssetUrl } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Star, ShoppingCart, MapPin, Package, ArrowLeft, Send, Check } from 'lucide-react';
 
@@ -149,7 +149,7 @@ const ProductDetails = () => {
         <div className="space-y-4">
           <div className="w-full h-80 md:h-[400px] bg-slate-100 dark:bg-slate-950 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
             <img
-              src={activeImage || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80'}
+              src={getAssetUrl(activeImage) || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80'}
               alt={product.name}
               className="w-full h-full object-cover"
             />
@@ -164,7 +164,7 @@ const ProductDetails = () => {
                   onClick={() => setActiveImage(img)}
                   className={`w-16 h-16 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${activeImage === img ? 'border-primary-500' : 'border-transparent'}`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={getAssetUrl(img)} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

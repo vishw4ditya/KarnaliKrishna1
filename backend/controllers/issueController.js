@@ -44,7 +44,7 @@ export const createIssue = async (req, res) => {
 
     let supportingImages = [];
     if (req.files && req.files.length > 0) {
-      supportingImages = req.files.map((file) => `/uploads/${file.filename}`);
+      supportingImages = req.files.map((file) => file.path && file.path.startsWith('http') ? file.path : `/uploads/${file.filename}`);
     }
 
     const isResolved = status === 'Resolved';

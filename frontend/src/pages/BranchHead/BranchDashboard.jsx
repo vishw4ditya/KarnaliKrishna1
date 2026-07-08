@@ -58,8 +58,13 @@ const BranchDashboard = () => {
       {/* Title */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">
-            {user?.branchName || 'Branch'} Dashboard
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+            <span>{user?.branchName || 'Branch'} Dashboard</span>
+            {user?.customId && (
+              <span className="text-xs font-mono font-black bg-primary-100 dark:bg-primary-950/30 text-primary-600 dark:text-primary-400 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                ID: {user.customId}
+              </span>
+            )}
           </h1>
           <p className="text-xs text-slate-400 mt-1 font-semibold">
             Merchant portal. Monitor branch-specific inventory, sales and log solved customer issues.

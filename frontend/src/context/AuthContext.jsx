@@ -14,10 +14,22 @@ export const getAssetUrl = (path) => {
   if (path.startsWith('http') || path.startsWith('data:')) return path;
   
   // Resolve base URL of backend
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-  const backendBaseUrl = apiUrl.endsWith('/api') ? apiUrl.slice(0, -4) : apiUrl;
+  let backendBaseUrl = '';
+  if (import.meta.env.VITE_API_URL) {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    backendBaseUrl = apiUrl.endsWith('/api') ? apiUrl.slice(0, -4) : apiUrl;
+  } else if (!import.meta.env.PROD) {
+    // In local development, default to localhost:5000
+    backendBaseUrl = 'http://localhost:5000';
+  }
   
-  return `${backendBaseUrl}${path}`;
+  // Normalize backslashes to forward slashes (e.g. for Windows backend storage paths)
+  const normalizedPath = path.replace(/\\/g, '/');
+  
+  // Ensure path starts with a leading slash
+  const finalPath = normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
+  
+  return `${backendBaseUrl}${finalPath}`;
 };
 
 export const AuthProvider = ({ children }) => {
